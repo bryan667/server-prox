@@ -34,15 +34,19 @@ app.get(`/api/poeOne/getItems`, async (req: any, res: any) => {
 });
 
 app.get(`/api/poeOne/getCharacters`, async (req: any, res: any) => {
-  const { accountName } = req.query;
+  const { accountName, realm } = req.query;
   if (!accountName) {
     return res.status(400).json({ error: "Missing accountName" });
   }
 
   try {
     // const encodedAccountName = encodeURIComponent(accountName)
+    const params: {accountName: string, realm?: string}= { accountName }
+    if (realm) {
+      params.realm = realm
+    }
     const response = await axios.get(`${POE_BASE_URL}/character-window/get-characters`, {
-      params: { accountName },
+      params,
       headers: {
         "User-Agent": "PoETrackerTest/1.0 (janbryanmartirez@gmail.com)"
       },
