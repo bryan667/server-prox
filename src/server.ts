@@ -61,12 +61,12 @@ app.get(`/api/poeOne/getCharacters`, async (req: any, res: any) => {
 
 app.get("/api/rsvp-status", async (req: any, res: any) => {
   const SHEET_ID = process.env.SHEET_ID;
-  const SHEET_NAME = process.env.SHEET_NAME;
-  const CELL_ID = process.env.CELL_ID;
   const API_KEY = process.env.API_KEY;
 
+  const { sheetName, cellId } = req.query;
+
   try {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!${CELL_ID}?key=${API_KEY}`;
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${sheetName}!${cellId}?key=${API_KEY}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
