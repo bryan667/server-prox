@@ -59,4 +59,23 @@ app.get(`/api/poeOne/getCharacters`, async (req: any, res: any) => {
   }
 });
 
+app.get("/api/rsvp-status", async (req: any, res: any) => {
+  const SHEET_ID = process.env.SHEET_ID;
+  const SHEET_NAME = process.env.SHEET_NAME;
+  const API_KEY = process.env.API_KEY;
+
+  try {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!M2?key=${API_KEY}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+
+    const totalGuests = data.values?.[0]?.[0] ? parseInt(data.values[0][0], 10) : 0;
+    res.json({ totalGuests });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch RSVP status" });
+  }
+});
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
